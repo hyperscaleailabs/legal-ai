@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LegalAI — AI General Counsel for SMBs</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: { 50: '#eef2ff', 500: '#6366f1', 600: '#4f46e5', 700: '#4338ca' }
+          }
+        }
+      }
+    }
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js"></script>
+</head>
+<body class="bg-white text-gray-900 antialiased">
+
+<!-- Nav -->
+<header class="sticky top-0 z-50 border-b border-gray-100 bg-white/90 backdrop-blur">
+  <div class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
+    <div class="flex items-center gap-2">
+      <div class="w-7 h-7 bg-indigo-600 rounded-md flex items-center justify-center">
+        <svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25z"/>
+        </svg>
+      </div>
+      <span class="font-semibold text-gray-900">LegalAI</span>
+      <span class="text-xs text-indigo-600 font-medium bg-indigo-50 px-1.5 py-0.5 rounded">Private Beta</span>
+    </div>
+    <nav class="hidden md:flex items-center gap-7 text-sm text-gray-600">
+      <a href="#how-it-works" class="hover:text-gray-900 transition-colors">How it works</a>
+      <a href="#features" class="hover:text-gray-900 transition-colors">Features</a>
+      <a href="#pricing" class="hover:text-gray-900 transition-colors">Pricing</a>
+    </nav>
+    <div class="flex items-center gap-3">
+      <a href="/dashboard" class="text-sm text-gray-600 hover:text-gray-900 transition-colors font-medium">Sign in</a>
+      <a href="#waitlist" class="text-sm bg-indigo-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-indigo-700 transition-colors">Join waitlist</a>
+    </div>
+  </div>
+</header>
+
+<!-- Hero -->
+<section class="pt-24 pb-20 px-6">
+  <div class="max-w-4xl mx-auto text-center">
+    <div class="inline-flex items-center gap-2 text-xs text-indigo-700 bg-indigo-50 border border-indigo-100 rounded-full px-4 py-1.5 mb-8 font-medium">
+      <span class="w-1.5 h-1.5 bg-indigo-500 rounded-full animate-pulse"></span>
+      Now in private beta · 40+ SMBs on the waitlist
+    </div>
+    <h1 class="text-5xl font-bold text-gray-900 leading-tight tracking-tight mb-6">
+      Legal review shouldn't require<br>
+      <span class="text-indigo-600">outside counsel.</span>
+    </h1>
+    <p class="text-xl text-gray-500 leading-relaxed max-w-2xl mx-auto mb-10">
+      LegalAI triages every inbound contract, redlines the risky clauses, and routes what actually
+      needs a lawyer to the right human — with a full audit trail.
+    </p>
+    <div class="flex flex-col sm:flex-row gap-3 justify-center" id="waitlist" x-data="{ email: '', submitted: false }">
+      <template x-if="!submitted">
+        <form @submit.prevent="submitted = true" class="flex flex-col sm:flex-row gap-3">
+          <input x-model="email" type="email" required placeholder="you@company.com"
+                 class="px-4 py-3 rounded-lg border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent w-72 shadow-sm" />
+          <button type="submit"
+                  class="px-6 py-3 bg-indigo-600 text-white text-sm font-semibold rounded-lg hover:bg-indigo-700 transition-colors shadow-sm whitespace-nowrap">
+            Join the waitlist &rarr;
+          </button>
+        </form>
+      </template>
+      <template x-if="submitted">
+        <div class="flex items-center gap-2 text-green-700 bg-green-50 border border-green-200 px-5 py-3 rounded-lg text-sm font-medium">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+          </svg>
+          You're on the list — we'll be in touch soon.
+        </div>
+      </template>
+    </div>
+    <p class="mt-4 text-xs text-gray-400">No credit card required. Invite-only access.</p>
+  </div>
+</section>
+
+<!-- Dashboard preview -->
+<section class="pb-24 px-6">
+  <div class="max-w-5xl mx-auto">
+    <div class="rounded-2xl border border-gray-200 shadow-2xl shadow-gray-100 overflow-hidden">
+      <!-- Fake browser chrome -->
+      <div class="bg-gray-100 border-b border-gray-200 px-4 py-3 flex items-center gap-3">
+        <div class="flex gap-1.5">
+          <div class="w-3 h-3 rounded-full bg-red-400"></div>
+          <div class="w-3 h-3 rounded-full bg-yellow-400"></div>
+          <div class="w-3 h-3 rounded-full bg-green-400"></div>
+        </div>
+        <div class="flex-1 bg-white rounded-md border border-gray-200 px-3 py-1 text-xs text-gray-400 text-center max-w-xs mx-auto">
+          app.legalai.co/dashboard
+        </div>
+      </div>
+      <!-- Mini dashboard preview -->
+      <div class="bg-gray-50 flex">
+        <!-- Tiny sidebar -->
+        <div class="w-40 bg-slate-900 p-3 flex-shrink-0">
+          <div class="flex items-center gap-1.5 mb-5 px-1">
+            <div class="w-5 h-5 bg-indigo-500 rounded flex items-center justify-center">
+              <div class="w-2.5 h-2.5 bg-white rounded-sm opacity-80"></div>
+            </div>
+            <span class="text-white text-xs font-semibold">LegalAI</span>
+          </div>
+          <div class="space-y-0.5">
+            <div class="bg-indigo-600 text-white text-xs px-2 py-1.5 rounded-md font-medium">Dashboard</div>
+            <div class="text-slate-400 text-xs px-2 py-1.5 rounded-md">Contracts</div>
+            <div class="text-slate-400 text-xs px-2 py-1.5 rounded-md">Upload</div>
+          </div>
+        </div>
+        <!-- Dashboard content preview -->
+        <div class="flex-1 p-5 space-y-4">
+          <div class="flex items-center justify-between">
+            <h2 class="text-sm font-semibold text-gray-800">Contract Inbox</h2>
+            <div class="text-xs bg-indigo-600 text-white px-3 py-1 rounded-md font-medium">Upload contract</div>
+          </div>
+          <!-- Stats row -->
+          <div class="grid grid-cols-4 gap-3">
+            <div class="bg-white rounded-lg p-3 border border-gray-100">
+              <div class="text-xl font-bold text-gray-900">5</div>
+              <div class="text-xs text-gray-500">Total</div>
+            </div>
+            <div class="bg-white rounded-lg p-3 border border-gray-100">
+              <div class="text-xl font-bold text-red-600">2</div>
+              <div class="text-xs text-gray-500">High risk</div>
+            </div>
+            <div class="bg-white rounded-lg p-3 border border-gray-100">
+              <div class="text-xl font-bold text-amber-600">3</div>
+              <div class="text-xs text-gray-500">Pending</div>
+            </div>
+            <div class="bg-white rounded-lg p-3 border border-gray-100">
+              <div class="text-xl font-bold text-green-600">1</div>
+              <div class="text-xs text-gray-500">Approved</div>
+            </div>
+          </div>
+          <!-- Contract rows -->
+          <div class="bg-white rounded-lg border border-gray-100 overflow-hidden">
+            <div class="divide-y divide-gray-50">
+              <div class="px-3 py-2.5 flex items-center gap-3">
+                <div class="flex-1 text-xs font-medium text-gray-800">acme_nda.pdf</div>
+                <div class="text-xs text-gray-400">Acme Corp</div>
+                <div class="text-xs bg-orange-100 text-orange-700 px-1.5 py-0.5 rounded font-medium">82 High</div>
+                <div class="text-xs text-amber-600 bg-amber-50 px-1.5 py-0.5 rounded">Pending</div>
+              </div>
+              <div class="px-3 py-2.5 flex items-center gap-3">
+                <div class="flex-1 text-xs font-medium text-gray-800">supplier_agreement.pdf</div>
+                <div class="text-xs text-gray-400">AWS</div>
+                <div class="text-xs bg-red-100 text-red-700 px-1.5 py-0.5 rounded font-medium">91 Critical</div>
+                <div class="text-xs text-purple-600 bg-purple-50 px-1.5 py-0.5 rounded">Escalated</div>
+              </div>
+              <div class="px-3 py-2.5 flex items-center gap-3">
+                <div class="flex-1 text-xs font-medium text-gray-800">mutual_nda_techco.pdf</div>
+                <div class="text-xs text-gray-400">TechCo</div>
+                <div class="text-xs bg-green-100 text-green-700 px-1.5 py-0.5 rounded font-medium">28 Low</div>
+                <div class="text-xs text-green-600 bg-green-50 px-1.5 py-0.5 rounded">Approved</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- How it works -->
+<section id="how-it-works" class="py-24 bg-gray-50 px-6">
+  <div class="max-w-4xl mx-auto">
+    <div class="text-center mb-16">
+      <h2 class="text-3xl font-bold text-gray-900 mb-4">From inbox to decision in minutes</h2>
+      <p class="text-gray-500 text-lg">Three steps. No legal degree required.</p>
+    </div>
+    <div class="grid md:grid-cols-3 gap-8">
+      {% set steps = [
+        ('01', 'Upload the contract', 'Drag and drop any NDA, vendor agreement, or MSA. PDF and DOCX supported.', 'M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5'),
+        ('02', 'AI reviews and redlines', 'LegalAI reads every clause, suggests redlines, scores risk, and flags what matters — in under 60 seconds.', 'M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z'),
+        ('03', 'Route or approve', 'Accept the redlines yourself or escalate to a human reviewer — with one click, full context, and a timestamped audit trail.', 'M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z'),
+      ] %}
+      {% for num, title, desc, icon_path in steps %}
+      <div class="relative">
+        <div class="w-12 h-12 bg-indigo-50 rounded-xl flex items-center justify-center mb-4">
+          <svg class="w-6 h-6 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+            <path stroke-linecap="round" stroke-linejoin="round" d="{{ icon_path }}"/>
+          </svg>
+        </div>
+        <div class="text-xs font-bold text-indigo-400 tracking-widest mb-2">STEP {{ num }}</div>
+        <h3 class="font-semibold text-gray-900 text-lg mb-2">{{ title }}</h3>
+        <p class="text-gray-500 text-sm leading-relaxed">{{ desc }}</p>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- Features -->
+<section id="features" class="py-24 px-6">
+  <div class="max-w-5xl mx-auto">
+    <div class="text-center mb-16">
+      <h2 class="text-3xl font-bold text-gray-900 mb-4">Built for the person who reads every contract</h2>
+      <p class="text-gray-500 text-lg">Whether you're ops, finance, or the company's first legal hire.</p>
+    </div>
+    <div class="grid md:grid-cols-2 gap-6">
+      {% set features = [
+        ('Grounded redlines', 'Every suggestion includes a rationale — no black-box outputs. Accept, reject, or modify each redline independently.', 'M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10', 'bg-indigo-50 text-indigo-600'),
+        ('Risk scoring', 'Each contract gets a 0–100 risk score across liability, IP, auto-renewal, indemnification, and governing law — so you know where to focus.', 'M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z', 'bg-amber-50 text-amber-600'),
+        ('Smart escalation', 'Set your own risk threshold. When a contract crosses it, route to the right reviewer with one click — with all redlines and context attached.', 'M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z', 'bg-green-50 text-green-600'),
+        ('Full audit trail', 'Every action is timestamped: who uploaded, when AI reviewed, who escalated, and what decision was made. Attorney-client privilege controls included.', 'M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25z', 'bg-slate-50 text-slate-600'),
+      ] %}
+      {% for title, desc, icon_path, icon_class in features %}
+      <div class="bg-white border border-gray-100 rounded-xl p-6 hover:shadow-md transition-shadow">
+        <div class="w-10 h-10 {{ icon_class }} rounded-lg flex items-center justify-center mb-4">
+          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+            <path stroke-linecap="round" stroke-linejoin="round" d="{{ icon_path }}"/>
+          </svg>
+        </div>
+        <h3 class="font-semibold text-gray-900 mb-2">{{ title }}</h3>
+        <p class="text-sm text-gray-500 leading-relaxed">{{ desc }}</p>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- Pricing -->
+<section id="pricing" class="py-24 bg-gray-50 px-6">
+  <div class="max-w-4xl mx-auto">
+    <div class="text-center mb-16">
+      <h2 class="text-3xl font-bold text-gray-900 mb-4">Simple pricing</h2>
+      <p class="text-gray-500">Pay for what you review. Cancel any time.</p>
+    </div>
+    <div class="grid md:grid-cols-3 gap-6">
+      {% set tiers = [
+        ('Starter', '$199', '/mo', ['Up to 20 contracts/month', 'AI redlines + risk score', 'Email escalation', '1 user seat', '90-day audit trail'], False),
+        ('Growth', '$499', '/mo', ['Up to 100 contracts/month', 'Everything in Starter', 'Reviewer routing dashboard', '5 user seats', '1-year audit trail', 'Priority support'], True),
+        ('Enterprise', 'Custom', '', ['Unlimited contracts', 'Everything in Growth', 'Custom escalation rules', 'Unlimited seats', 'Privilege controls', 'SLA + dedicated CSM'], False),
+      ] %}
+      {% for name, price, period, features, highlighted in tiers %}
+      <div class="rounded-xl border p-6 flex flex-col
+                  {% if highlighted %}bg-indigo-600 border-indigo-600 text-white shadow-xl scale-105{% else %}bg-white border-gray-200{% endif %}">
+        <div class="mb-6">
+          <div class="text-sm font-semibold mb-1 {% if highlighted %}text-indigo-200{% else %}text-gray-500{% endif %}">{{ name }}</div>
+          <div class="flex items-end gap-1">
+            <span class="text-4xl font-bold {% if highlighted %}text-white{% else %}text-gray-900{% endif %}">{{ price }}</span>
+            {% if period %}<span class="text-sm mb-1 {% if highlighted %}text-indigo-300{% else %}text-gray-400{% endif %}">{{ period }}</span>{% endif %}
+          </div>
+        </div>
+        <ul class="flex-1 space-y-3 mb-8">
+          {% for feature in features %}
+          <li class="flex items-start gap-2 text-sm {% if highlighted %}text-indigo-100{% else %}text-gray-600{% endif %}">
+            <svg class="w-4 h-4 mt-0.5 flex-shrink-0 {% if highlighted %}text-indigo-300{% else %}text-indigo-500{% endif %}" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+            </svg>
+            {{ feature }}
+          </li>
+          {% endfor %}
+        </ul>
+        <a href="#waitlist"
+           class="block text-center text-sm font-semibold py-2.5 rounded-lg transition-colors
+                  {% if highlighted %}bg-white text-indigo-600 hover:bg-indigo-50{% else %}bg-indigo-600 text-white hover:bg-indigo-700{% endif %}">
+          {% if name == 'Enterprise' %}Talk to us{% else %}Join waitlist{% endif %}
+        </a>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="py-24 px-6">
+  <div class="max-w-2xl mx-auto text-center">
+    <h2 class="text-3xl font-bold text-gray-900 mb-4">Stop letting contracts pile up unread.</h2>
+    <p class="text-gray-500 text-lg mb-8">Join 40+ SMBs already on the waitlist. Private beta invites going out in July 2026.</p>
+    <a href="/dashboard" class="inline-block bg-indigo-600 text-white px-8 py-3.5 rounded-xl text-sm font-semibold hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-200">
+      See the live demo &rarr;
+    </a>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="border-t border-gray-100 py-8 px-6">
+  <div class="max-w-6xl mx-auto flex items-center justify-between text-sm text-gray-400">
+    <div class="flex items-center gap-2">
+      <div class="w-5 h-5 bg-indigo-600 rounded flex items-center justify-center">
+        <div class="w-2.5 h-2.5 bg-white rounded-sm opacity-80"></div>
+      </div>
+      <span>LegalAI &copy; 2026</span>
+    </div>
+    <div class="flex gap-6">
+      <a href="#" class="hover:text-gray-600 transition-colors">Privacy</a>
+      <a href="#" class="hover:text-gray-600 transition-colors">Terms</a>
+      <a href="mailto:hello@legalai.co" class="hover:text-gray-600 transition-colors">Contact</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

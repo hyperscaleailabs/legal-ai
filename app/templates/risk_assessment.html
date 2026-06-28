@@ -1,0 +1,343 @@
+{% extends "base.html" %}
+
+{% block title %}Risk Report — {{ contract.filename }} — LegalAI{% endblock %}
+
+{% block content %}
+<div class="flex flex-col h-full"
+     x-data="{
+       modalOpen: false,
+       reviewerId: '{{ reviewers[0].id }}',
+       notes: '',
+       priority: 'normal',
+       submitting: false
+     }">
+
+  <!-- Header -->
+  <div class="bg-white border-b border-gray-100 px-8 py-5 flex-shrink-0">
+    <div class="flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <a href="/contracts/{{ contract.id }}" class="text-gray-400 hover:text-gray-600 transition-colors">
+          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"/>
+          </svg>
+        </a>
+        <div>
+          <div class="flex items-center gap-2">
+            <h1 class="text-xl font-bold text-gray-900">Risk Report</h1>
+            <span class="text-sm text-gray-400 font-normal">{{ contract.filename }}</span>
+          </div>
+          <p class="text-xs text-gray-400 mt-0.5">{{ contract.counterparty }} · {{ contract.type }}</p>
+        </div>
+      </div>
+      <button
+        @click="modalOpen = true"
+        class="inline-flex items-center gap-2 bg-red-600 text-white text-sm font-semibold px-5 py-2.5 rounded-lg hover:bg-red-700 transition-colors shadow-sm">
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z"/>
+        </svg>
+        Escalate to reviewer
+      </button>
+    </div>
+  </div>
+
+  <div class="flex-1 overflow-y-auto px-8 py-6 space-y-6">
+
+    <!-- Risk score hero -->
+    <div class="bg-white border border-gray-100 rounded-2xl p-7 flex items-center gap-8">
+      <!-- Score ring -->
+      <div class="relative flex-shrink-0">
+        <svg class="w-28 h-28 -rotate-90" viewBox="0 0 100 100">
+          <circle cx="50" cy="50" r="42" fill="none" stroke="#f3f4f6" stroke-width="10"/>
+          <circle cx="50" cy="50" r="42" fill="none" stroke-width="10"
+            stroke="{% if contract.risk_score >= 80 %}#ef4444{% elif contract.risk_score >= 60 %}#f97316{% elif contract.risk_score >= 40 %}#eab308{% else %}#22c55e{% endif %}"
+            stroke-linecap="round"
+            stroke-dasharray="{{ (contract.risk_score / 100 * 263.9) | round(1) }} 263.9"/>
+        </svg>
+        <div class="absolute inset-0 flex flex-col items-center justify-center">
+          <span class="text-3xl font-bold
+            {% if contract.risk_score >= 80 %}text-red-600
+            {% elif contract.risk_score >= 60 %}text-orange-500
+            {% elif contract.risk_score >= 40 %}text-yellow-500
+            {% else %}text-green-500{% endif %}">
+            {{ contract.risk_score }}
+          </span>
+          <span class="text-xs text-gray-400 font-medium">/100</span>
+        </div>
+      </div>
+
+      <!-- Score context -->
+      <div class="flex-1">
+        <div class="flex items-center gap-3 mb-2">
+          <span class="text-2xl font-bold text-gray-900">{{ contract.risk_level }} Risk</span>
+          {% if contract.risk_level == 'Critical' %}
+            <span class="text-xs font-semibold px-2.5 py-1 rounded-full bg-red-100 text-red-800 ring-1 ring-red-200">Recommend legal review</span>
+          {% elif contract.risk_level == 'High' %}
+            <span class="text-xs font-semibold px-2.5 py-1 rounded-full bg-orange-100 text-orange-800 ring-1 ring-orange-200">Consider escalating</span>
+          {% elif contract.risk_level == 'Medium' %}
+            <span class="text-xs font-semibold px-2.5 py-1 rounded-full bg-yellow-100 text-yellow-800 ring-1 ring-yellow-200">Review redlines</span>
+          {% else %}
+            <span class="text-xs font-semibold px-2.5 py-1 rounded-full bg-green-100 text-green-800 ring-1 ring-green-200">Safe to approve</span>
+          {% endif %}
+        </div>
+        <p class="text-sm text-gray-500 leading-relaxed mb-4">
+          {% if contract.risk_score >= 80 %}
+            This contract contains one or more clauses with significant legal or financial exposure.
+            We recommend routing to qualified legal counsel before signing.
+          {% elif contract.risk_score >= 60 %}
+            This contract has above-average risk. Review the flagged clauses and consider the suggested
+            redlines before signing.
+          {% elif contract.risk_score >= 40 %}
+            This contract has moderate risk. The AI has suggested targeted changes — review and accept
+            those that apply to your situation.
+          {% else %}
+            This contract is within standard market terms. No significant issues were identified.
+            You can likely approve with minimal review.
+          {% endif %}
+        </p>
+        <!-- Risk breakdown bars -->
+        <div class="grid grid-cols-2 gap-x-8 gap-y-2">
+          {% set categories = [
+            ('Liability', 85 if contract.risk_score >= 80 else 40 if contract.risk_score >= 40 else 20),
+            ('IP Rights', 72 if contract.risk_score >= 70 else 30 if contract.risk_score >= 40 else 15),
+            ('Auto-renewal', 90 if contract.risk_score >= 80 else 20),
+            ('Indemnification', 78 if contract.risk_score >= 80 else 35 if contract.risk_score >= 40 else 10),
+            ('Governing law', 25),
+            ('Data & Privacy', 40 if contract.risk_score >= 40 else 15),
+          ] %}
+          {% for cat, score in categories %}
+          <div class="flex items-center gap-2">
+            <span class="text-xs text-gray-500 w-24 flex-shrink-0">{{ cat }}</span>
+            <div class="flex-1 h-1.5 bg-gray-100 rounded-full overflow-hidden">
+              <div class="h-full rounded-full
+                {% if score >= 70 %}bg-red-400
+                {% elif score >= 50 %}bg-orange-400
+                {% elif score >= 30 %}bg-yellow-400
+                {% else %}bg-green-400{% endif %}"
+                style="width: {{ score }}%">
+              </div>
+            </div>
+            <span class="text-xs font-medium w-5 text-right
+              {% if score >= 70 %}text-red-600
+              {% elif score >= 50 %}text-orange-600
+              {% elif score >= 30 %}text-yellow-600
+              {% else %}text-green-600{% endif %}">
+              {{ score }}
+            </span>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+
+    <!-- Flagged clauses -->
+    {% if contract.flagged_clauses %}
+    <div>
+      <h2 class="text-sm font-semibold text-gray-900 mb-3">
+        Flagged clauses
+        <span class="ml-2 text-xs font-normal text-gray-400">{{ contract.flagged_clauses | length }} issue{{ 's' if contract.flagged_clauses | length != 1 }}</span>
+      </h2>
+      <div class="space-y-3">
+        {% for clause in contract.flagged_clauses %}
+        <div class="bg-white border rounded-xl overflow-hidden
+          {% if clause.severity == 'Critical' %}border-red-200
+          {% elif clause.severity == 'High' %}border-orange-200
+          {% else %}border-yellow-200{% endif %}">
+          <div class="px-5 py-3.5 flex items-start gap-4">
+            <div class="flex-shrink-0 mt-0.5">
+              <div class="w-8 h-8 rounded-lg flex items-center justify-center
+                {% if clause.severity == 'Critical' %}bg-red-100
+                {% elif clause.severity == 'High' %}bg-orange-100
+                {% else %}bg-yellow-100{% endif %}">
+                <svg class="w-4 h-4
+                  {% if clause.severity == 'Critical' %}text-red-600
+                  {% elif clause.severity == 'High' %}text-orange-600
+                  {% else %}text-yellow-600{% endif %}"
+                  fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/>
+                </svg>
+              </div>
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-2 mb-1">
+                <span class="text-sm font-semibold text-gray-900">{{ clause.clause_title }}</span>
+                <span class="text-xs font-semibold px-1.5 py-0.5 rounded
+                  {% if clause.severity == 'Critical' %}bg-red-100 text-red-700
+                  {% elif clause.severity == 'High' %}bg-orange-100 text-orange-700
+                  {% else %}bg-yellow-100 text-yellow-700{% endif %}">
+                  {{ clause.severity }}
+                </span>
+                <span class="text-xs text-gray-400 bg-gray-50 border border-gray-100 px-1.5 py-0.5 rounded">{{ clause.category }}</span>
+              </div>
+              <blockquote class="text-xs text-gray-500 italic border-l-2 pl-3 mb-2
+                {% if clause.severity == 'Critical' %}border-red-300
+                {% elif clause.severity == 'High' %}border-orange-300
+                {% else %}border-yellow-300{% endif %}">
+                {{ clause.excerpt }}
+              </blockquote>
+              <p class="text-xs text-gray-600 leading-relaxed">{{ clause.rationale }}</p>
+            </div>
+            <a href="/contracts/{{ contract.id }}"
+               class="flex-shrink-0 text-xs text-indigo-600 hover:text-indigo-700 font-medium whitespace-nowrap">
+              View redline →
+            </a>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    {% else %}
+    <div class="bg-green-50 border border-green-100 rounded-xl p-6 text-center">
+      <svg class="w-8 h-8 text-green-500 mx-auto mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z"/>
+      </svg>
+      <p class="text-sm font-semibold text-green-800">No flagged clauses</p>
+      <p class="text-xs text-green-600 mt-1">This contract is within acceptable parameters</p>
+    </div>
+    {% endif %}
+
+    <!-- Audit trail -->
+    <div class="bg-white border border-gray-100 rounded-xl overflow-hidden">
+      <div class="px-5 py-3.5 border-b border-gray-50 flex items-center gap-2">
+        <svg class="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"/>
+        </svg>
+        <h3 class="text-sm font-semibold text-gray-900">Audit trail</h3>
+      </div>
+      <div id="audit-trail" class="divide-y divide-gray-50">
+        {% for event in contract.audit_trail %}
+        <div class="px-5 py-3 flex items-start gap-4">
+          <div class="w-1.5 h-1.5 rounded-full bg-indigo-400 mt-1.5 flex-shrink-0"></div>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-2">
+              <span class="text-xs font-semibold text-gray-800">{{ event.action }}</span>
+              <span class="text-xs text-gray-400">· {{ event.actor }}</span>
+            </div>
+            <p class="text-xs text-gray-500 mt-0.5">{{ event.detail }}</p>
+          </div>
+          <span class="text-xs text-gray-400 font-mono flex-shrink-0">{{ event.timestamp[:10] }} {{ event.timestamp[11:16] if event.timestamp | length > 10 else '' }}</span>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- Status section with HTMX target -->
+    <div id="escalation-status">
+      {% if contract.status == 'Escalated' %}
+      <div class="bg-purple-50 border border-purple-200 rounded-xl p-5 flex items-center gap-4">
+        <div class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center flex-shrink-0">
+          <svg class="w-5 h-5 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z"/>
+          </svg>
+        </div>
+        <div>
+          <p class="text-sm font-semibold text-purple-900">Already escalated</p>
+          <p class="text-xs text-purple-600 mt-0.5">This contract has been routed to a reviewer. Check the audit trail for details.</p>
+        </div>
+      </div>
+      {% endif %}
+    </div>
+
+  </div>
+
+  <!-- Escalation modal (Alpine.js) -->
+  <div x-show="modalOpen" x-cloak
+       class="fixed inset-0 z-50 flex items-center justify-center p-4"
+       @keydown.escape.window="modalOpen = false">
+
+    <!-- Backdrop -->
+    <div class="absolute inset-0 bg-gray-900/50 backdrop-blur-sm" @click="modalOpen = false"></div>
+
+    <!-- Modal -->
+    <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden"
+         @click.stop>
+      <div class="px-6 py-5 border-b border-gray-100">
+        <div class="flex items-center justify-between">
+          <div>
+            <h2 class="text-base font-bold text-gray-900">Escalate to reviewer</h2>
+            <p class="text-xs text-gray-400 mt-0.5">{{ contract.filename }}</p>
+          </div>
+          <button @click="modalOpen = false" class="text-gray-400 hover:text-gray-600 transition-colors">
+            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <form
+        hx-post="/contracts/{{ contract.id }}/escalate"
+        hx-target="#escalation-status"
+        hx-swap="outerHTML"
+        hx-on::after-request="modalOpen = false"
+        class="p-6 space-y-5">
+
+        <!-- Reviewer select -->
+        <div>
+          <label class="block text-xs font-semibold text-gray-700 mb-2">Assign to reviewer</label>
+          <div class="space-y-2">
+            {% for reviewer in reviewers %}
+            <label class="flex items-center gap-3 p-3 rounded-xl border border-gray-100 cursor-pointer hover:border-indigo-200 hover:bg-indigo-50 transition-colors has-[:checked]:border-indigo-400 has-[:checked]:bg-indigo-50">
+              <input type="radio" name="reviewer_id" value="{{ reviewer.id }}"
+                     x-model="reviewerId"
+                     class="accent-indigo-600"/>
+              <div class="flex items-center gap-2.5 flex-1">
+                <div class="w-8 h-8 bg-indigo-100 rounded-full flex items-center justify-center text-indigo-700 text-xs font-bold">
+                  {{ reviewer.name[0] }}
+                </div>
+                <div>
+                  <div class="text-sm font-medium text-gray-900">{{ reviewer.name }}</div>
+                  <div class="text-xs text-gray-400">{{ reviewer.title }}</div>
+                </div>
+              </div>
+            </label>
+            {% endfor %}
+          </div>
+        </div>
+
+        <!-- Priority -->
+        <div>
+          <label class="block text-xs font-semibold text-gray-700 mb-2">Priority</label>
+          <div class="flex gap-2">
+            {% for p in [('normal', 'Normal'), ('high', 'High'), ('urgent', 'Urgent')] %}
+            <label class="flex-1 text-center text-xs py-2 rounded-lg border cursor-pointer transition-colors font-medium
+                          has-[:checked]:border-indigo-400 has-[:checked]:bg-indigo-50 has-[:checked]:text-indigo-700
+                          border-gray-200 text-gray-500 hover:border-gray-300">
+              <input type="radio" name="priority" value="{{ p[0] }}" class="sr-only"
+                     {% if p[0] == 'normal' %}checked{% endif %}/>
+              {{ p[1] }}
+            </label>
+            {% endfor %}
+          </div>
+        </div>
+
+        <!-- Notes -->
+        <div>
+          <label class="block text-xs font-semibold text-gray-700 mb-2">
+            Notes <span class="text-gray-400 font-normal">(optional)</span>
+          </label>
+          <textarea name="notes" x-model="notes" rows="3"
+                    placeholder="Add context for the reviewer — specific concerns, deadline, counterparty relationship…"
+                    class="w-full text-xs border border-gray-200 rounded-lg px-3 py-2.5 text-gray-900 placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent resize-none"></textarea>
+        </div>
+
+        <!-- What gets sent -->
+        <div class="bg-gray-50 rounded-lg p-3 text-xs text-gray-500 space-y-1">
+          <p class="font-semibold text-gray-700 mb-1.5">Reviewer will receive:</p>
+          <div class="flex items-center gap-1.5"><svg class="w-3.5 h-3.5 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg> Original contract + AI redlines</div>
+          <div class="flex items-center gap-1.5"><svg class="w-3.5 h-3.5 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg> Risk report with flagged clauses</div>
+          <div class="flex items-center gap-1.5"><svg class="w-3.5 h-3.5 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg> Full audit trail</div>
+          <div class="flex items-center gap-1.5"><svg class="w-3.5 h-3.5 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg> Your notes (if provided)</div>
+        </div>
+
+        <button type="submit"
+                @click="submitting = true"
+                :disabled="submitting"
+                class="w-full bg-red-600 text-white text-sm font-semibold py-3 rounded-xl hover:bg-red-700 transition-colors disabled:opacity-60">
+          <span x-text="submitting ? 'Routing…' : 'Escalate now'"></span>
+        </button>
+      </form>
+    </div>
+  </div>
+
+</div>
+{% endblock %}
