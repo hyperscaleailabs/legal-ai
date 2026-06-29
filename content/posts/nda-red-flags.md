@@ -3,8 +3,8 @@ title: "5 Red Flags in NDA Agreements Every Founder Should Know"
 date: 2026-05-28
 author: Marcus Chen
 excerpt: NDAs look routine until they aren't. These five provisions turn a standard confidentiality agreement into a serious legal liability — and they show up more often than you'd think.
-image: https://images.unsplash.com/photo-1521791136064-7986c2920216?auto=format&fit=crop&w=1200&q=80
-image_alt: Two professionals reviewing a contract across a conference table
+image: /static/images/blog/nda-red-flags-hero.png
+image_alt: NDA red flags warning illustration
 tags: [NDAs, Contracts, Legal Risk, Founders]
 ---
 
@@ -28,7 +28,7 @@ An overbroad definition — one that sweeps in all verbal communications, all in
 
 A residuals clause allows the receiving party to use any information "retained in the unaided memories of individuals" who had access to the confidential information. In other words: if your engineer remembers it, you can build with it.
 
-![Close-up of a contract clause being highlighted with a pen](https://images.unsplash.com/photo-1554224155-6726b3ff858f?auto=format&fit=crop&w=800&q=80)
+![Close-up of a contract clause being highlighted](/static/images/blog/contract-clause-inline.png)
 
 This clause is standard in Big Tech vendor agreements. It's commercially reasonable for them; it's a serious risk if you're the disclosing party sharing anything of real value.
 

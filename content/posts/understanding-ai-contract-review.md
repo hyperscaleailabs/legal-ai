@@ -3,8 +3,8 @@ title: "Understanding AI in Contract Review: From Weeks to Minutes"
 date: 2026-05-15
 author: Sarah Kim
 excerpt: How artificial intelligence is transforming the way companies handle contract review — reducing turnaround from weeks to minutes and catching risks human reviewers miss.
-image: https://images.unsplash.com/photo-1589829085413-56de8ae18c73?auto=format&fit=crop&w=1200&q=80
-image_alt: Scales of justice on a wooden desk with legal documents
+image: /static/images/blog/ai-contract-review-hero.png
+image_alt: AI-assisted contract review illustration
 tags: [AI, Legal Tech, Contracts, Automation]
 ---
 
@@ -18,7 +18,7 @@ A typical inbound contract — an NDA, a vendor MSA, a SaaS subscription agreeme
 
 Worse, time pressure degrades quality. When a deal is closing and legal is underwater, reviewers triage rather than analyze. Critical provisions go unread.
 
-![A lawyer reviewing stacks of paper contracts at a desk](https://images.unsplash.com/photo-1450101499163-c8848c66ca85?auto=format&fit=crop&w=800&q=80)
+![A lawyer reviewing stacks of paper contracts at a desk](/static/images/blog/lawyer-desk-inline.png)
 
 ## How AI Reads a Contract
 

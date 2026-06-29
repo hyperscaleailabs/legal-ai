@@ -3,8 +3,8 @@ title: "The Hidden Risks in SaaS Subscription Agreements"
 date: 2026-06-10
 author: Sarah Kim
 excerpt: SaaS contracts are clicked through, not read. But the standard enterprise SaaS agreement contains provisions that can lock you in, expose your data, and limit your remedies — often without you realizing it.
-image: https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=1200&q=80
-image_alt: Dashboard analytics on a laptop screen showing software metrics
+image: /static/images/blog/saas-contract-risks-hero.png
+image_alt: SaaS contract risks cloud and lock illustration
 tags: [SaaS, Contracts, Vendor Risk, Legal Tech]
 ---
 
@@ -26,7 +26,7 @@ That's a license to train their AI on your data. Your contracts, your customer r
 
 **What's not:** Rights to aggregate, anonymize, or use data for any purpose beyond your specific service delivery.
 
-![Server room with blue lighting representing cloud data infrastructure](https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=800&q=80)
+![Server infrastructure representing cloud data storage](/static/images/blog/server-room-inline.png)
 
 ## Service Level Agreements That Don't Actually Guarantee Anything
 

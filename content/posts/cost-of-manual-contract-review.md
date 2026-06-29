@@ -3,8 +3,8 @@ title: "The True Cost of Manual Contract Review (It's Not Just Billable Hours)"
 date: 2026-06-20
 author: Marcus Chen
 excerpt: When companies calculate the cost of manual contract review, they count attorney hours. They miss the deal velocity lost, the risk carried silently, and the institutional knowledge that walks out the door.
-image: https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&w=1200&q=80
-image_alt: Professional reviewing financial documents at a modern office desk
+image: /static/images/blog/cost-of-manual-review-hero.png
+image_alt: Cost of manual review clock and analytics illustration
 tags: [Legal Operations, Cost, Efficiency, Legal Tech]
 ---
 
@@ -24,7 +24,7 @@ But attorney time is the cost everyone can see. It's the iceberg above water.
 
 Every contract waiting in an attorney's queue is a deal not closing. The average contract review queue is 3–5 business days for in-house counsel during normal periods — and 10–15 days when volume spikes.
 
-![A sales team waiting in a meeting room with a contract on the table](https://images.unsplash.com/photo-1600880292203-757bb62b4baf?auto=format&fit=crop&w=800&q=80)
+![A business meeting with a contract on the table](/static/images/blog/business-meeting-inline.png)
 
 Consider what's in that queue:
 - Vendor agreements blocking a product launch
